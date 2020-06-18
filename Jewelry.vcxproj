@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>for /R "$(ProjectDir)lib\$(PlatformTarget)" %%f in (*.dll) do copy "%%f" "$(Outdir)"</Command>
@@ -134,7 +134,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
@@ -152,7 +152,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>for /R "$(ProjectDir)lib\$(PlatformTarget)" %%f in (*.dll) do copy "%%f" "$(Outdir)"</Command>
@@ -173,7 +173,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
@@ -190,12 +190,12 @@
     <ClCompile Include="src\layers\graphics\sdl\SDLGraphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\layers\graphics\GraphicsManager.cpp" />
+    <ClCompile Include="src\ScoreManager.cpp" />
     <ClCompile Include="src\utils\FileUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\board\Board.h" />
     <ClInclude Include="include\board\BoardManager.h" />
-    <ClInclude Include="include\board\Burst.h" />
     <ClInclude Include="include\board\Jewel.h" />
     <ClInclude Include="include\GameManager.h" />
     <ClInclude Include="include\GamePhase.h" />
@@ -214,6 +214,9 @@
     <ClInclude Include="include\layers\Layer.h" />
     <ClInclude Include="include\layers\LayerManager.h" />
     <ClInclude Include="include\layers\graphics\sdl\SDLGraphics.h" />
+    <ClInclude Include="include\media\Text.h" />
+    <ClInclude Include="include\other\matrix.h" />
+    <ClInclude Include="include\ScoreManager.h" />
     <ClInclude Include="include\sdl\begin_code.h" />
     <ClInclude Include="include\sdl\close_code.h" />
     <ClInclude Include="include\sdl\SDL.h" />
@@ -295,6 +298,7 @@
     <ClInclude Include="include\sdl\SDL_thread.h" />
     <ClInclude Include="include\sdl\SDL_timer.h" />
     <ClInclude Include="include\sdl\SDL_touch.h" />
+    <ClInclude Include="include\sdl\SDL_ttf.h" />
     <ClInclude Include="include\sdl\SDL_types.h" />
     <ClInclude Include="include\sdl\SDL_version.h" />
     <ClInclude Include="include\sdl\SDL_video.h" />

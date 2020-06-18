@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
 
     GameManager::initialize();
 
-    while (!board::BoardManager::sweep());
+    while (board::BoardManager::sweep(true) > 0);
     
     while (!GameManager::quit) {
 

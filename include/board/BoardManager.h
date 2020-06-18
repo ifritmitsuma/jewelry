@@ -3,10 +3,15 @@
 #include "board/Board.h"
 #include "board/Jewel.h"
 #include "layers/input/MouseInputType.h"
+#include <array>
 
 namespace board {
 
 	class BoardManager {
+
+	public:
+
+		static const int SIZE = 8;
 		
 	private:
 
@@ -16,15 +21,23 @@ namespace board {
 
 		static Board* board;
 
+		static std::array<int, BoardManager::SIZE> boardMovements;
+
+		static std::array<int, BoardManager::SIZE> count;
+
+		static std::array<int, BoardManager::SIZE> index;
+
+		static bool moving;
+
 	public:
 
 		static bool locked;
 
-		static const int SIZE = 8;
+		static Matrix<int>* getBoard();
 
-		static int** getBoard();
+		//static int sweep(bool instantaneous = true);
 
-		static bool sweep();
+		static int sweep(bool instantaneous = false);
 
 		static void update();
 

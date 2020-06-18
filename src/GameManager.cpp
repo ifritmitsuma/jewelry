@@ -3,7 +3,7 @@
 #include "board/BoardManager.h"
 #include "layers/graphics/GraphicsManager.h"
 #include "layers/input/InputManager.h"
-#include <sdl\SDL_timer.h>
+#include "ScoreManager.h"
 
 bool GameManager::quit = false;
 
@@ -13,13 +13,17 @@ void GameManager::initialize() {
 
     layers::GraphicsManager::createNewViewport(graphics::ViewportType::BOARD, 100, 100, 650, 650);
 
+    layers::GraphicsManager::createNewViewport(graphics::ViewportType::SCORE, 720, 100, 100, 20);
+
+    ScoreManager::drawScore();
+
 }
 
 void GameManager::update() {
 
-    layers::InputManager::poll();
-
     layers::GraphicsManager::clear();
+
+    layers::InputManager::poll();
 
     layers::GraphicsManager::drawImage("Backdrop13.jpg", 0, 0);
 
@@ -32,6 +36,8 @@ void GameManager::update() {
         board::BoardManager::update();
 
         board::BoardManager::drawBoard();
+
+        //ScoreManager::drawScore();
 
         break;
     }

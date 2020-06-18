@@ -3,6 +3,7 @@
 #include "layers/LayerManager.h"
 #include "layers/graphics/Graphics.h"
 #include "media/Image.h"
+#include "media/Text.h"
 #include "layers/graphics/Viewport.h"
 #include "layers/graphics/ViewportType.h"
 #include <map>
@@ -56,6 +57,20 @@ namespace layers {
 		*	@param imageName The name of the Image to draw
 		*/
 		static void drawImage(const std::string imageName, const int x, const int y, const Viewport viewport);
+
+		/**
+		*	Draws Text in the Graphics Window
+		*
+		*	@param text The text draw
+		*/
+		static void drawText(const media::Text text, const int x, const int y);
+
+		/**
+		*	Draws Text in a viewport area of the Graphics Window
+		*
+		*	@param text The text draw
+		*/
+		static void drawText(const media::Text text, const int x, const int y, const Viewport viewport);
 
 		/**
 		*	Draws an Image in a viewport area of the Graphics Window

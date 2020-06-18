@@ -3,7 +3,9 @@
 #include "layers/graphics/Graphics.h"
 #include "sdl/SDL.h"
 #include "sdl/SDL_image.h"
+#include "sdl/SDL_ttf.h"
 #include <map>
+#include <media\Text.h>
 
 namespace layers {
 
@@ -20,7 +22,11 @@ namespace layers {
 		std::map<const Image*, SDL_Texture*>* images = new std::map<const Image*, SDL_Texture*>();
 		std::map<const std::string, const Image*>* imageNames = new std::map<const std::string, const Image*>();
 
+		std::map<const std::string, TTF_Font*>* fonts = new std::map<const std::string, TTF_Font*>();
+
 		void loadImage(const std::string filename);
+
+		void loadFont(const std::string font);
 
 	public:
 
@@ -39,6 +45,10 @@ namespace layers {
 		void drawImage(const std::string imageName, const int x, const int y, const Viewport viewport) const override;
 
 		void drawImage(const Image* image, const int x, const int y, const Viewport viewport) const override;
+
+		void drawText(const Text text, const int x, const int y) const override;
+
+		void drawText(const Text text, const int x, const int y, const Viewport viewport) const override;
 
 		const Image* getImage(const std::string filename) override;
 

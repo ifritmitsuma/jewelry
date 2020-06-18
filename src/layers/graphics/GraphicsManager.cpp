@@ -30,6 +30,14 @@ void GraphicsManager::drawImage(const Image* image, const int x, const int y, co
 	graphics->drawImage(image, x, y, viewport);
 }
 
+void GraphicsManager::drawText(const media::Text text, const int x, const int y) {
+	graphics->drawText(text, x, y);
+}
+
+void GraphicsManager::drawText(const media::Text text, const int x, const int y, const Viewport viewport) {
+	graphics->drawText(text, x, y, viewport);
+}
+
 void GraphicsManager::clear() {
 	graphics->clear();
 }
