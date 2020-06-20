@@ -22,7 +22,7 @@ namespace board {
 
 		static Jewel drag;
 
-		static bool dragging;
+		static graphics::ScreenPosition grabPosition;
 
 		static JewelPair exchangingPair;
 

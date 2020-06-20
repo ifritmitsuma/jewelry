@@ -11,7 +11,7 @@ ScreenPosition BoardManager::mousePosition = { -1, -1 };
 
 Jewel BoardManager::hover = { -1, -1, -1 };
 Jewel BoardManager::drag = { -1, -1, -1 };
-bool BoardManager::dragging = false;
+ScreenPosition BoardManager::grabPosition = { -1, -1 };
 JewelPair BoardManager::exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
 
 bool BoardManager::locked = false;
@@ -170,6 +170,8 @@ void BoardManager::update() {
             
         if (!BoardManager::moving) {
 
+            BoardManager::locked = true;
+
             BoardManager::index = std::array<int, BoardManager::SIZE>();
 
             board->getBoard()->transpose();
@@ -240,6 +242,7 @@ void BoardManager::update() {
 
         exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
 
+        BoardManager::locked = false;
 
     }
 
@@ -285,18 +288,15 @@ void BoardManager::drawBoard() {
             int y = 0;
 
             if (color > 0) {
+                if (drag.color != -1 && drag.line == boardI && drag.column == j) {
+                    continue;
+                }
                 const media::Image* image = layers::GraphicsManager::getImage("Color-" + std::to_string(color) + ".png");
                 x = 10 + (j * (image->getWidth() + 10));
                 y = 10 + (boardI * (image->getHeight() + 10)) + (boardMovements[j] > 0 && index[j] >= i ? boardMovements[j] : 0);
-                if (drag.color != -1 && drag.line == boardI && drag.column == j) {
-                    x = mousePosition.x - 35;
-                    y = mousePosition.y - 35;
-                }
-                else {
-                    int under = 10 + ((boardI + 1) * (image->getHeight() + 10));
-                    if (under * count[j] <= y) {
-                        boardMovements[j] = 0;
-                    }
+                int under = 10 + ((boardI + 1) * (image->getHeight() + 10));
+                if (under * count[j] <= y) {
+                    boardMovements[j] = 0;
                 }
                 layers::GraphicsManager::drawImage(image, x, y, boardViewport);
             }
@@ -316,6 +316,21 @@ void BoardManager::drawBoard() {
         }
     }
 
+    // We need to draw the dragging piece last
+    if (drag.color != -1) {
+        const media::Image* image = layers::GraphicsManager::getImage("Color-" + std::to_string(drag.color) + ".png");
+        int x = 10 + (drag.column * (image->getWidth() + 10));
+        int y = 10 + (drag.line * (image->getHeight() + 10));
+    
+        int mouseDiffX = mousePosition.x - grabPosition.x;
+        int mouseDiffY = mousePosition.y - grabPosition.y;
+        bool vertical = mouseDiffX > 0 ? mouseDiffX < mouseDiffY : mouseDiffX > mouseDiffY;
+
+        x += (!vertical ? mouseDiffX : 0);
+        y += (vertical ? mouseDiffY : 0);
+        layers::GraphicsManager::drawImage(image, x, y, boardViewport);
+    }
+    
     for (int column = 0; column < SIZE; ++column) {
         if (boardMovements[column] > 0) {
             boardMovements[column] += 3;
@@ -364,6 +379,7 @@ void BoardManager::handleMouse(const input::MouseInputType type, const int x, co
         if (exchangingPair.first.color == -1) {
             //dragging = true;
             drag = { color, i, j };
+            grabPosition = mousePosition;
         }
         else {
             if ((diffI == 1 && diffJ == 0) ||
@@ -372,7 +388,7 @@ void BoardManager::handleMouse(const input::MouseInputType type, const int x, co
             }
             else {
                 exchangingPair.second = { -1, -1, -1 };
-                exchangingPair.first = { color, i, j };
+                drag = { color, i, j };
             }
         }
         break;
