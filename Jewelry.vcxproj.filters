@@ -383,6 +383,9 @@
     <ClInclude Include="include\sdl\SDL_ttf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\layers\graphics\ScreenPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\image\Backdrop13.jpg">

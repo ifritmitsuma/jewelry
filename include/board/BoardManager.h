@@ -4,6 +4,7 @@
 #include "board/Jewel.h"
 #include "layers/input/MouseInputType.h"
 #include <array>
+#include <layers\graphics\ScreenPosition.h>
 
 namespace board {
 
@@ -15,7 +16,13 @@ namespace board {
 		
 	private:
 
+		static graphics::ScreenPosition mousePosition;
+
 		static Jewel hover;
+
+		static Jewel drag;
+
+		static bool dragging;
 
 		static JewelPair exchangingPair;
 

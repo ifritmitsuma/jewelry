@@ -7,7 +7,11 @@
 
 using namespace board;
 
+ScreenPosition BoardManager::mousePosition = { -1, -1 };
+
 Jewel BoardManager::hover = { -1, -1, -1 };
+Jewel BoardManager::drag = { -1, -1, -1 };
+bool BoardManager::dragging = false;
 JewelPair BoardManager::exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
 
 bool BoardManager::locked = false;
@@ -154,6 +158,12 @@ int BoardManager::sweep(bool instantaneous) {
 
 void BoardManager::update() {
 
+    if (BoardManager::drag.color != -1 && (mousePosition.x / 80 != drag.column || mousePosition.y / 80 != drag.line)) {
+        exchangingPair.first = drag;
+        drag = { -1, -1, -1 };
+        exchangingPair.second = { 1, mousePosition.y / 80, mousePosition.x / 80 };
+    }
+
     if (BoardManager::moving) {
             
         BoardManager::moving = boardMovements != std::array<int, SIZE>();
@@ -276,11 +286,17 @@ void BoardManager::drawBoard() {
 
             if (color > 0) {
                 const media::Image* image = layers::GraphicsManager::getImage("Color-" + std::to_string(color) + ".png");
-                int under = 10 + ((boardI + 1) * (image->getHeight() + 10));
                 x = 10 + (j * (image->getWidth() + 10));
                 y = 10 + (boardI * (image->getHeight() + 10)) + (boardMovements[j] > 0 && index[j] >= i ? boardMovements[j] : 0);
-                if (under * count[j] <= y) {
-                    boardMovements[j] = 0;
+                if (drag.color != -1 && drag.line == boardI && drag.column == j) {
+                    x = mousePosition.x - 40;
+                    y = mousePosition.y - 40;
+                }
+                else {
+                    int under = 10 + ((boardI + 1) * (image->getHeight() + 10));
+                    if (under * count[j] <= y) {
+                        boardMovements[j] = 0;
+                    }
                 }
                 layers::GraphicsManager::drawImage(image, x, y, boardViewport);
             }
@@ -316,6 +332,8 @@ void BoardManager::handleMouse(const input::MouseInputType type, const int x, co
         return;
     }
 
+    mousePosition = { x, y };
+
     int j = x / 80;
     int i = y / 80;
 
@@ -335,8 +353,8 @@ void BoardManager::handleMouse(const input::MouseInputType type, const int x, co
         break;
     case input::MouseInputType::LEFT_BUTTON_DOWN:
         if (exchangingPair.first.color == -1) {
-            exchangingPair.second = { -1, -1, -1 };
-            exchangingPair.first = { color, i, j };
+            dragging = true;
+            drag = { color, i, j };
         }
         else {
             if ((diffI == 1 && diffJ == 0) ||
@@ -350,12 +368,26 @@ void BoardManager::handleMouse(const input::MouseInputType type, const int x, co
         }
         break;
     case input::MouseInputType::LEFT_BUTTON_UP:
-        if (exchangingPair.first.color != -1) {
+        if (drag.color != -1 && dragging) {
             if ((diffI == 1 && diffJ == 0) ||
                 (diffI == 0 && diffJ == 1)) {
                 exchangingPair.second = { color, i, j };
             }
         }
+        drag = { -1, -1, -1 };
+        if (!dragging) {
+            if (exchangingPair.first.color != -1) {
+                if ((diffI == 1 && diffJ == 0) ||
+                    (diffI == 0 && diffJ == 1)) {
+                    exchangingPair.second = { color, i, j };
+                }
+            }
+            else {
+                exchangingPair.second = { -1, -1, -1 };
+                exchangingPair.first = { color, i, j };
+            }
+        }
+        dragging = false;
         break;
     default:
         break;

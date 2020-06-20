@@ -204,6 +204,7 @@
     <ClInclude Include="include\layers\audio\sdl\SDLAudio.h" />
     <ClInclude Include="include\layers\graphics\Graphics.h" />
     <ClInclude Include="include\layers\graphics\GraphicsManager.h" />
+    <ClInclude Include="include\layers\graphics\ScreenPosition.h" />
     <ClInclude Include="include\layers\graphics\Viewport.h" />
     <ClInclude Include="include\layers\graphics\ViewportType.h" />
     <ClInclude Include="include\layers\input\MouseInputType.h" />
