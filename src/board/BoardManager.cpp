@@ -12,17 +12,25 @@ ScreenPosition BoardManager::mousePosition = { -1, -1 };
 Jewel BoardManager::hover = { -1, -1, -1 };
 Jewel BoardManager::drag = { -1, -1, -1 };
 ScreenPosition BoardManager::grabPosition = { -1, -1 };
+int BoardManager::failedSwap = -100;
 JewelPair BoardManager::exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
 
 bool BoardManager::locked = false;
 
 Board* BoardManager::board = new Board(SIZE);
 
-std::array<int, BoardManager::SIZE> BoardManager::boardMovements = std::array<int, BoardManager::SIZE>();
+std::array<float, BoardManager::SIZE> BoardManager::boardMovements = std::array<float, BoardManager::SIZE>();
 std::array<int, BoardManager::SIZE> BoardManager::count = std::array<int, BoardManager::SIZE>();
 std::array<int, BoardManager::SIZE> BoardManager::index = std::array<int, BoardManager::SIZE>();
 
 bool BoardManager::moving = false;
+
+int fib(int n)
+{
+    if (n <= 1)
+        return n;
+    return fib(n - 1) + fib(n - 2);
+}
 
 Matrix<int>* BoardManager::getBoard() {
 	return board->getBoard();
@@ -164,55 +172,7 @@ void BoardManager::update() {
         exchangingPair.second = { 1, mousePosition.y / 80, mousePosition.x / 80 };
     }
 
-    if (BoardManager::moving) {
-            
-        BoardManager::moving = boardMovements != std::array<int, SIZE>();
-            
-        if (!BoardManager::moving) {
-
-            BoardManager::locked = true;
-
-            BoardManager::index = std::array<int, BoardManager::SIZE>();
-
-            board->getBoard()->transpose();
-            for (int column = 0; column < SIZE; ++column) {
-
-
-                std::vector<int> row = board->getBoard()->getRowAsVec(column);
-                std::vector<int>::iterator it = row.begin();
-
-                int count = 0;
-                for (it = row.begin(); it != row.end(); ++it) {
-                    if (*it == 0) {
-                        it = row.erase(it);
-                        --it;
-                        ++count;
-                    }
-                }
-                
-                it = row.begin();
-                while (BoardManager::count[column] > 0) {
-                    it = row.insert(row.begin(), rand() % 5 + 1);
-                    BoardManager::count[column]--;
-                }
-                board->getBoard()->setRow(column, row);
-
-            }
-            board->getBoard()->transpose();
-            
-
-            int combo = 0;
-            if ((combo = BoardManager::sweep()) > 0) {
-                std::cout << "COMBO!" << std::endl;
-                ScoreManager::addScore(combo);
-            }
-            else {
-                BoardManager::locked = false;
-            }
-            
-        }
-
-    } else if (exchangingPair.second.color != -1) {
+    if (!BoardManager::moving && exchangingPair.second.color != -1 && failedSwap == -100) {
 
         BoardManager::locked = true;
 
@@ -232,6 +192,15 @@ void BoardManager::update() {
 
             board->setJewel(exchangingPair.first.line + SIZE, exchangingPair.first.column, board->getJewel(exchangingPair.second.line + SIZE, exchangingPair.second.column));
             board->setJewel(exchangingPair.second.line + SIZE, exchangingPair.second.column, tempJewel);
+        
+            failedSwap = 10;
+
+        } else {
+
+            exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
+
+            BoardManager::locked = false;
+
         }
 
         ScoreManager::addScore(score);
@@ -240,9 +209,71 @@ void BoardManager::update() {
 
         //std::cout << *board->getBoard() << std::endl;
 
-        exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
+    }
 
-        BoardManager::locked = false;
+}
+
+void BoardManager::checkIfFinishedMoving() {
+    
+    if (moving) {
+
+        bool stillMoving = false;
+
+        for (int column = 0; column < SIZE; ++column) {
+            if (boardMovements[column] > 0) {
+                stillMoving = true;
+                // CHANGEME!!!!!
+                boardMovements[column] *= 70 / (float)layers::GraphicsManager::SCREEN_FPS;
+                //boardMovements[column] += 2;
+            }
+        }
+
+        BoardManager::moving = stillMoving;
+
+        if (!BoardManager::moving) {
+
+            BoardManager::locked = true;
+
+            BoardManager::index = std::array<int, BoardManager::SIZE>();
+
+            board->getBoard()->transpose();
+            for (int column = 0; column < SIZE; ++column) {
+
+                std::vector<int> row = board->getBoard()->getRowAsVec(column);
+                std::vector<int>::iterator it = row.begin();
+
+                int count = 0;
+                for (it = row.begin(); it != row.end(); ++it) {
+                    if (*it == 0) {
+                        it = row.erase(it);
+                        --it;
+                        ++count;
+                    }
+                }
+
+                it = row.begin();
+                while (BoardManager::count[column] > 0) {
+                    it = row.insert(row.begin(), rand() % 5 + 1);
+                    BoardManager::count[column]--;
+                }
+                board->getBoard()->setRow(column, row);
+
+            }
+            board->getBoard()->transpose();
+
+            int combo = 0;
+            if ((combo = BoardManager::sweep()) > 0) {
+                std::cout << "COMBO!" << std::endl;
+                ScoreManager::addScore(combo);
+            }
+            else {
+                BoardManager::moving = false;
+                BoardManager::locked = false;
+            }
+
+            drawBoard();
+
+        }
 
     }
 
@@ -259,13 +290,13 @@ void BoardManager::drawBoard() {
     const media::Image* glow = layers::GraphicsManager::getImage("glow.png");
     const media::Image* selected = layers::GraphicsManager::getImage("select.png");
 
-    for (int i = SIZE; i < SIZE * 2; ++i) {
-        for (int j = 0; j < SIZE; ++j) {
+    for (float i = SIZE; i < SIZE * 2; ++i) {
+        for (float j = 0; j < SIZE; ++j) {
 
-            int boardI = i - SIZE;
+            float boardI = i - SIZE;
 
-            int x = 5 + (j * board_back_image->getWidth() + 5);
-            int y = 5 + (boardI * board_back_image->getHeight() + 5);
+            float x = 5 + (j * (float) board_back_image->getWidth() + 5);
+            float y = 5 + (boardI * (float) board_back_image->getHeight() + 5);
             layers::GraphicsManager::drawImage(board_back_image, x, y, boardViewport);
 
             if (!BoardManager::locked && hover.line == boardI && hover.column == j) {
@@ -278,25 +309,30 @@ void BoardManager::drawBoard() {
         }
     }
 
-    for (int i = 0; i < SIZE * 2; ++i) {
-        for (int j = 0; j < SIZE; ++j) {
-            int color = board->getJewel(i, j);
+    for (float i = 0; i < SIZE * 2; ++i) {
+        for (float j = 0; j < SIZE; ++j) {
+            int color = board->getJewel((int) i, (int) j);
 
-            int boardI = i - SIZE;
+            float boardI = i - SIZE;
 
-            int x = 0;
-            int y = 0;
+            float x = 0;
+            float y = 0;
 
             if (color > 0) {
-                if (drag.color != -1 && drag.line == boardI && drag.column == j) {
+                if (drag.color != -1 && (float) drag.line == boardI && (float) drag.column == j) {
                     continue;
                 }
                 const media::Image* image = layers::GraphicsManager::getImage("Color-" + std::to_string(color) + ".png");
-                x = 10 + (j * (image->getWidth() + 10));
-                y = 10 + (boardI * (image->getHeight() + 10)) + (boardMovements[j] > 0 && index[j] >= i ? boardMovements[j] : 0);
-                int under = 10 + ((boardI + 1) * (image->getHeight() + 10));
-                if (under * count[j] <= y) {
-                    boardMovements[j] = 0;
+                x = 10 + (j * ((float) image->getWidth() + 10));
+                // shake
+                if (failedSwap != -100 && ((exchangingPair.first.color != -1 && exchangingPair.first.column == j && exchangingPair.first.line == boardI) ||
+                    (exchangingPair.second.color != -1 && exchangingPair.second.column == j && exchangingPair.second.line == boardI))) {
+                    x += 2 * (failedSwap * -1);
+                }
+                y = 10 + (boardI * ((float) image->getHeight() + 10)) + (boardMovements[(int) j] > 0 && (float) index[(int)j] >= (int)i ? (float) boardMovements[(int)j] : 0);
+                float under = 10 + ((boardI + (float) count[(int)j]) * ((float) image->getHeight() + 10));
+                if (under <= y) {
+                    boardMovements[(int)j] = 0;
                 }
                 layers::GraphicsManager::drawImage(image, x, y, boardViewport);
             }
@@ -316,6 +352,19 @@ void BoardManager::drawBoard() {
         }
     }
 
+    if (failedSwap == 0) {
+        failedSwap = -100;
+
+        exchangingPair = { { -1, -1, -1 }, { -1, -1, -1 } };
+
+        BoardManager::locked = false;
+    }
+    else if (failedSwap != -100) {
+        bool negative = failedSwap < 0;
+        failedSwap = abs(failedSwap) - 1;
+        failedSwap *= (!negative ? -1 : 1);
+    }
+
     // We need to draw the dragging piece last
     if (drag.color != -1) {
         const media::Image* image = layers::GraphicsManager::getImage("Color-" + std::to_string(drag.color) + ".png");
@@ -328,14 +377,10 @@ void BoardManager::drawBoard() {
 
         x += (!vertical ? mouseDiffX : 0);
         y += (vertical ? mouseDiffY : 0);
-        layers::GraphicsManager::drawImage(image, x, y, boardViewport);
+        layers::GraphicsManager::drawImage(image, (float) x, (float) y, boardViewport);
     }
-    
-    for (int column = 0; column < SIZE; ++column) {
-        if (boardMovements[column] > 0) {
-            boardMovements[column] += 3;
-        }
-    }
+
+    checkIfFinishedMoving();
 
     layers::GraphicsManager::drawImage(board_border_image, 0, 0, boardViewport);
 }

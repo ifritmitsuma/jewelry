@@ -4,8 +4,7 @@
 
 using namespace layers;
 
-const int SCREEN_FPS = 60;
-const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+int SCREEN_TICKS_PER_FRAME;
 Uint32 startTicks = SDL_GetTicks();
 Uint32 capTicks;
 int countedFrames = 0;
@@ -120,32 +119,32 @@ void SDLGraphics::loadFont(const std::string font) {
     }
 }
 
-void SDLGraphics::drawImage(const std::string name, int x, int y) const {
+void SDLGraphics::drawImage(const std::string name, const float x, const float y) const {
 
     drawImage(imageNames->at(name), x, y);
 
 }
 
-void SDLGraphics::drawImage(const Image* image, const int x, const int y) const {
+void SDLGraphics::drawImage(const Image* image, const float x, const float y) const {
 
-    SDL_Rect dest;
+    SDL_FRect dest;
     dest.x = x;
     dest.y = y;
     dest.w = image->getWidth();
     dest.h = image->getHeight();
 
     // copy the texture to the rendering context
-    SDL_RenderCopy(renderer, images->at(image), NULL, &dest);
+    SDL_RenderCopyF(renderer, images->at(image), NULL, &dest);
 
 }
 
-void SDLGraphics::drawImage(const std::string name, const int x, const int y, const Viewport viewport) const {
+void SDLGraphics::drawImage(const std::string name, const float x, const float y, const Viewport viewport) const {
 
     drawImage(imageNames->at(name), x, y, viewport);
 
 }
 
-void SDLGraphics::drawImage(const Image* image, const int x, const int y, const Viewport viewport) const {
+void SDLGraphics::drawImage(const Image* image, const float x, const float y, const Viewport viewport) const {
 
     SDL_Rect rectViewport;
     rectViewport.x = viewport.x;
@@ -221,8 +220,8 @@ const Image* SDLGraphics::getImage(const std::string filename) {
 
 }
 
-SDLGraphics* SDLGraphics::getGraphics(int width, int height) {
-	SDLGraphics* graphics = new SDLGraphics(width, height);
+SDLGraphics* SDLGraphics::getGraphics(int fps, int width, int height) {
+	SDLGraphics* graphics = new SDLGraphics(fps, width, height);
 	graphics->initialize();
 	return graphics;
 }

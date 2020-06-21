@@ -29,13 +29,13 @@ namespace layers {
 
 		virtual void render() const = 0;
 
-		virtual void drawImage(const std::string imageName, const int x, const int y) const = 0;
+		virtual void drawImage(const std::string imageName, const float x, const float y) const = 0;
 
-		virtual void drawImage(const Image* image, const int x, const int y) const = 0;
+		virtual void drawImage(const Image* image, const float x, const float y) const = 0;
 
-		virtual void drawImage(const std::string imageName, const int x, const int y, const Viewport viewport) const = 0;
+		virtual void drawImage(const std::string imageName, const float x, const float y, const Viewport viewport) const = 0;
 
-		virtual void drawImage(const Image* image, const int x, const int y, const Viewport viewport) const = 0;
+		virtual void drawImage(const Image* image, const float x, const float y, const Viewport viewport) const = 0;
 
 		virtual void drawText(const Text text, const int x, const int y) const = 0;
 

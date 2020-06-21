@@ -3,10 +3,11 @@
 
 using namespace layers;
 
+const int GraphicsManager::SCREEN_FPS = 60;
 const int GraphicsManager::SCREEN_WIDTH = 1024;
 const int GraphicsManager::SCREEN_HEIGHT = 768;
 
-Graphics* GraphicsManager::graphics = SDLGraphics::getGraphics(GraphicsManager::SCREEN_WIDTH, GraphicsManager::SCREEN_HEIGHT);
+Graphics* GraphicsManager::graphics = SDLGraphics::getGraphics(GraphicsManager::SCREEN_FPS, GraphicsManager::SCREEN_WIDTH, GraphicsManager::SCREEN_HEIGHT);
 
 std::map<const ViewportType, const Viewport>* GraphicsManager::viewports = new std::map<const ViewportType, const Viewport>();
 
@@ -14,19 +15,19 @@ const bool GraphicsManager::isClosed() {
 	return graphics->isClosed();
 }
 
-void GraphicsManager::drawImage(const std::string imageName, const int x, const int y) {
+void GraphicsManager::drawImage(const std::string imageName, const float x, const float y) {
 	graphics->drawImage(imageName, x, y);
 }
 
-void GraphicsManager::drawImage(const Image* image, const int x, const int y) {
+void GraphicsManager::drawImage(const Image* image, const float x, const float y) {
 	graphics->drawImage(image, x, y);
 }
 
-void GraphicsManager::drawImage(const std::string imageName, const int x, const int y, const Viewport viewport) {
+void GraphicsManager::drawImage(const std::string imageName, const float x, const float y, const Viewport viewport) {
 	graphics->drawImage(imageName, x, y, viewport);
 }
 
-void GraphicsManager::drawImage(const Image* image, const int x, const int y, const Viewport viewport) {
+void GraphicsManager::drawImage(const Image* image, const float x, const float y, const Viewport viewport) {
 	graphics->drawImage(image, x, y, viewport);
 }
 

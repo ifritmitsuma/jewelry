@@ -24,17 +24,21 @@ namespace board {
 
 		static graphics::ScreenPosition grabPosition;
 
+		static int failedSwap;
+
 		static JewelPair exchangingPair;
 
 		static Board* board;
 
-		static std::array<int, BoardManager::SIZE> boardMovements;
+		static std::array<float, BoardManager::SIZE> boardMovements;
 
 		static std::array<int, BoardManager::SIZE> count;
 
 		static std::array<int, BoardManager::SIZE> index;
 
 		static bool moving;
+
+		static void checkIfFinishedMoving();
 
 	public:
 
