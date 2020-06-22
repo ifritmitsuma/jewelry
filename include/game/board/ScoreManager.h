@@ -8,6 +8,8 @@ private:
 
 public:
 
+	static void initialize();
+
 	static int getScore();
 
 	static void addScore(unsigned int score);

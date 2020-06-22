@@ -9,11 +9,18 @@
 
 namespace layers {
 
+	class Comparator {
+	public:
+		bool operator()(const Image& c1, const Image& c2) const {
+			return c1.getFilename() < c2.getFilename();
+		}
+	};
+
 	class SDLGraphics : public Graphics {
 
 	private:
 
-		int SCREEN_TICKS_PER_FRAME;
+		Uint32 SCREEN_TICKS_PER_FRAME;
 
 		int width, height;
 
@@ -21,8 +28,8 @@ namespace layers {
 
 		SDL_Renderer* renderer = NULL;
 
-		std::map<const Image*, SDL_Texture*>* images = new std::map<const Image*, SDL_Texture*>();
-		std::map<const std::string, const Image*>* imageNames = new std::map<const std::string, const Image*>();
+		std::map<Image, SDL_Texture*, Comparator>* images = new std::map<Image, SDL_Texture*, Comparator>();
+		std::map<const std::string, Image*>* imageNames = new std::map<const std::string, Image*>();
 
 		std::map<const std::string, TTF_Font*>* fonts = new std::map<const std::string, TTF_Font*>();
 
@@ -38,23 +45,29 @@ namespace layers {
 
 		void initialize() override;
 
+		void beforeRender() const override;
+
 		void clear() const override;
 
 		void render() const override;
 
 		void drawImage(const std::string imageName, const float x, const float y) const override;
 
-		void drawImage(const Image* image, const float x, const float y) const override;
+		void drawImage(Image* image, const float x, const float y) const override;
 
 		void drawImage(const std::string imageName, const float x, const float y, const Viewport viewport) const override;
 
-		void drawImage(const Image* image, const float x, const float y, const Viewport viewport) const override;
+		void drawImage(Image* image, const float x, const float y, const Viewport viewport) const override;
 
-		void drawText(const Text text, const int x, const int y) const override;
+		void drawText(const Text text, const float x, const float y) const override;
 
-		void drawText(const Text text, const int x, const int y, const Viewport viewport) const override;
+		void drawText(const Text text, const float x, const float y, const Viewport viewport) const override;
 
-		const Image* getImage(const std::string filename) override;
+		void fillRect(const float x, const float y, const float width, const float height, const Color color) const override;
+
+		void fillRect(const float x, const float y, const float width, const float height, const Color color, const Viewport viewport) const override;
+
+		Image* getImage(const std::string filename) override;
 
 		static SDLGraphics* getGraphics(int fps, int width, int height);
 

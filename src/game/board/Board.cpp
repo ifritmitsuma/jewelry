@@ -1,4 +1,4 @@
-#include "board/Board.h"
+#include "game/board/Board.h"
 #include <math.h>
 #include <time.h>
 #include <stdlib.h>

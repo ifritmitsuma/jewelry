@@ -19,7 +19,7 @@ void GraphicsManager::drawImage(const std::string imageName, const float x, cons
 	graphics->drawImage(imageName, x, y);
 }
 
-void GraphicsManager::drawImage(const Image* image, const float x, const float y) {
+void GraphicsManager::drawImage(Image* image, const float x, const float y) {
 	graphics->drawImage(image, x, y);
 }
 
@@ -27,16 +27,28 @@ void GraphicsManager::drawImage(const std::string imageName, const float x, cons
 	graphics->drawImage(imageName, x, y, viewport);
 }
 
-void GraphicsManager::drawImage(const Image* image, const float x, const float y, const Viewport viewport) {
+void GraphicsManager::drawImage(Image* image, const float x, const float y, const Viewport viewport) {
 	graphics->drawImage(image, x, y, viewport);
 }
 
-void GraphicsManager::drawText(const media::Text text, const int x, const int y) {
+void GraphicsManager::drawText(const media::Text text, const float x, const float y) {
 	graphics->drawText(text, x, y);
 }
 
-void GraphicsManager::drawText(const media::Text text, const int x, const int y, const Viewport viewport) {
+void GraphicsManager::drawText(const media::Text text, const float x, const float y, const Viewport viewport) {
 	graphics->drawText(text, x, y, viewport);
+}
+
+void GraphicsManager::fillRect(const float x, const float y, const float width, const float height, const Color color) {
+	graphics->fillRect(x, y, width, height, color);
+}
+
+void GraphicsManager::fillRect(const float x, const float y, const float width, const float height, const Color color, const Viewport viewport) {
+	graphics->fillRect(x, y, width, height, color, viewport);
+}
+
+void GraphicsManager::beforeRender() {
+	graphics->beforeRender();
 }
 
 void GraphicsManager::clear() {
@@ -47,7 +59,7 @@ void GraphicsManager::render() {
 	graphics->render();
 }
 
-const media::Image* GraphicsManager::getImage(const std::string filename) {
+media::Image* GraphicsManager::getImage(const std::string filename) {
 	return graphics->getImage(filename);
 }
 
@@ -73,6 +85,10 @@ const Viewport GraphicsManager::getViewportForCoordinate(int* x, int* y) {
 	}
 	Viewport ret = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	return ret;
+}
+
+void GraphicsManager::clearViewports() {
+	viewports->clear();
 }
 
 void GraphicsManager::free() {

@@ -11,29 +11,29 @@ namespace media {
 
 	private:
 
-		int width;
+		float width;
 
-		int height;
+		float height;
 
 		std::string filename;
 
 	public:
 
-		Image(const std::string filename, const int width, const int height) {
+		Image(const std::string filename, const float width, const float height) {
 			this->filename = filename;
 			this->width = width;
 			this->height = height;
 		}
 
-		const int getWidth() const { return width; }
+		const float getWidth() const { return width; }
 
-		void setWidth(const int width) { this->width = width; }
+		void setWidth(const float width) { this->width = width; }
 
-		const int getHeight() const { return height; }
+		const float getHeight() const { return height; }
 
-		void setHeight(const int height) { this->height = height; }
+		void setHeight(const float height) { this->height = height; }
 
-		const std::string getFilename() { return filename; }
+		const std::string getFilename() const { return filename; }
 
 		void setFilename(const std::string filename) { this->filename = filename; }
 

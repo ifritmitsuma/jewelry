@@ -30,22 +30,34 @@
     <ClCompile Include="src\utils\FileUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\layers\input\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\layers\input\sdl\SDLInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\board\Board.cpp">
+    <ClCompile Include="src\layers\audio\AudioManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\board\BoardManager.cpp">
+    <ClCompile Include="src\layers\audio\sdl\SDLAudio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScoreManager.cpp">
+    <ClCompile Include="src\game\GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\board\Board.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\board\BoardManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\MainMenuManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\board\ScoreManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\graphics\Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -347,15 +359,6 @@
     <ClInclude Include="include\utils\FileUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\board\Board.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\board\BoardManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\layers\input\MouseInputType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -365,16 +368,7 @@
     <ClInclude Include="include\layers\graphics\ViewportType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GamePhase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\board\Jewel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\other\matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ScoreManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\media\Text.h">
@@ -384,6 +378,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\layers\graphics\ScreenPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\media\Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sdl\SDL_mixer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\board\Board.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\board\BoardManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\board\Jewel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\MainMenuManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\GamePhase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\board\ScoreManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\layers\graphics\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\layers\graphics\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -406,5 +433,34 @@
     <Image Include="assets\image\Color-5.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\image\board_back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\image\board_border.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\image\glow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\image\logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\image\select.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\sound\Accept.mp3" />
+    <Media Include="assets\sound\Item2A.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\sound\Menu2A.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\sound\song18.mp3" />
+    <Media Include="assets\sound\song21.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\font\Blader.ttf" />
   </ItemGroup>
 </Project>

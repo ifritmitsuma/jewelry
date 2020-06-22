@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;sdl\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>for /R "$(ProjectDir)lib\$(PlatformTarget)" %%f in (*.dll) do copy "%%f" "$(Outdir)"</Command>
@@ -134,7 +134,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;sdl\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
@@ -152,7 +152,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;sdl\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>for /R "$(ProjectDir)lib\$(PlatformTarget)" %%f in (*.dll) do copy "%%f" "$(Outdir)"</Command>
@@ -173,7 +173,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl\SDL2.lib;sdl\SDL2main.lib;sdl\SDL2_image.lib;sdl\SDL2_ttf.lib;sdl\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
@@ -181,27 +181,34 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\board\Board.cpp" />
-    <ClCompile Include="src\board\BoardManager.cpp" />
-    <ClCompile Include="src\GameManager.cpp" />
+    <ClCompile Include="src\game\board\Board.cpp" />
+    <ClCompile Include="src\game\board\BoardManager.cpp" />
+    <ClCompile Include="src\game\GameManager.cpp" />
+    <ClCompile Include="src\game\MainMenuManager.cpp" />
+    <ClCompile Include="src\layers\audio\AudioManager.cpp" />
+    <ClCompile Include="src\layers\audio\sdl\SDLAudio.cpp" />
+    <ClCompile Include="src\layers\graphics\Button.cpp" />
     <ClCompile Include="src\layers\input\InputManager.cpp" />
     <ClCompile Include="src\layers\input\sdl\SDLInput.cpp" />
     <ClCompile Include="src\layers\LayerManager.cpp" />
     <ClCompile Include="src\layers\graphics\sdl\SDLGraphics.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\layers\graphics\GraphicsManager.cpp" />
-    <ClCompile Include="src\ScoreManager.cpp" />
+    <ClCompile Include="src\game\board\ScoreManager.cpp" />
     <ClCompile Include="src\utils\FileUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\board\Board.h" />
-    <ClInclude Include="include\board\BoardManager.h" />
-    <ClInclude Include="include\board\Jewel.h" />
-    <ClInclude Include="include\GameManager.h" />
-    <ClInclude Include="include\GamePhase.h" />
+    <ClInclude Include="include\game\board\Board.h" />
+    <ClInclude Include="include\game\board\BoardManager.h" />
+    <ClInclude Include="include\game\board\Jewel.h" />
+    <ClInclude Include="include\game\GameManager.h" />
+    <ClInclude Include="include\game\GamePhase.h" />
+    <ClInclude Include="include\game\MainMenuManager.h" />
     <ClInclude Include="include\layers\audio\Audio.h" />
     <ClInclude Include="include\layers\audio\AudioManager.h" />
     <ClInclude Include="include\layers\audio\sdl\SDLAudio.h" />
+    <ClInclude Include="include\layers\graphics\Button.h" />
+    <ClInclude Include="include\layers\graphics\Color.h" />
     <ClInclude Include="include\layers\graphics\Graphics.h" />
     <ClInclude Include="include\layers\graphics\GraphicsManager.h" />
     <ClInclude Include="include\layers\graphics\ScreenPosition.h" />
@@ -215,9 +222,10 @@
     <ClInclude Include="include\layers\Layer.h" />
     <ClInclude Include="include\layers\LayerManager.h" />
     <ClInclude Include="include\layers\graphics\sdl\SDLGraphics.h" />
+    <ClInclude Include="include\media\Sound.h" />
     <ClInclude Include="include\media\Text.h" />
     <ClInclude Include="include\other\matrix.h" />
-    <ClInclude Include="include\ScoreManager.h" />
+    <ClInclude Include="include\game\board\ScoreManager.h" />
     <ClInclude Include="include\sdl\begin_code.h" />
     <ClInclude Include="include\sdl\close_code.h" />
     <ClInclude Include="include\sdl\SDL.h" />
@@ -257,6 +265,7 @@
     <ClInclude Include="include\sdl\SDL_main.h" />
     <ClInclude Include="include\sdl\SDL_messagebox.h" />
     <ClInclude Include="include\sdl\SDL_metal.h" />
+    <ClInclude Include="include\sdl\SDL_mixer.h" />
     <ClInclude Include="include\sdl\SDL_mouse.h" />
     <ClInclude Include="include\sdl\SDL_mutex.h" />
     <ClInclude Include="include\sdl\SDL_name.h" />
@@ -311,6 +320,12 @@
     <Image Include="assets\image\Backdrop13.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\image\board_back.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\image\board_border.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="assets\image\Color-1.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -326,6 +341,37 @@
     <Image Include="assets\image\Color-5.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="assets\image\glow.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\image\logo.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="assets\image\select.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\sound\Accept.mp3">
+      <DeploymentContent>true</DeploymentContent>
+    </Media>
+    <Media Include="assets\sound\Item2A.wav">
+      <DeploymentContent>true</DeploymentContent>
+    </Media>
+    <Media Include="assets\sound\Menu2A.wav">
+      <DeploymentContent>true</DeploymentContent>
+    </Media>
+    <Media Include="assets\sound\song18.mp3">
+      <DeploymentContent>true</DeploymentContent>
+    </Media>
+    <Media Include="assets\sound\song21.mp3">
+      <DeploymentContent>true</DeploymentContent>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\font\Blader.ttf">
+      <DeploymentContent>true</DeploymentContent>
+    </Font>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

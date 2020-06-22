@@ -7,6 +7,7 @@
 #include "layers/graphics/Viewport.h"
 #include "layers/graphics/ViewportType.h"
 #include <map>
+#include "layers/graphics/Color.h"
 
 using namespace graphics;
 
@@ -17,14 +18,14 @@ namespace layers {
 	 *
 	 * Manages the Graphics Layer
 	 */
-	class GraphicsManager : public LayerManager {
+	class GraphicsManager {
 
 	private:
 
 		static const int SCREEN_WIDTH;
 		static const int SCREEN_HEIGHT;
 
-		static  Graphics* graphics;
+		static Graphics* graphics;
 
 		static std::map<const ViewportType, const Viewport>* viewports;
 
@@ -51,7 +52,7 @@ namespace layers {
 		*
 		*	@param image The Image to draw
 		*/
-		static void drawImage(const Image* image, const float x, const float y);
+		static void drawImage(Image* image, const float x, const float y);
 
 		/**
 		*	Draws an Image in a viewport area of the Graphics Window
@@ -65,33 +66,41 @@ namespace layers {
 		*
 		*	@param image The Image to draw
 		*/
-		static void drawImage(const Image* image, const float x, const float y, const Viewport viewport);
+		static void drawImage(Image* image, const float x, const float y, const Viewport viewport);
 
 		/**
 		*	Draws Text in the Graphics Window
 		*
 		*	@param text The text draw
 		*/
-		static void drawText(const media::Text text, const int x, const int y);
+		static void drawText(const media::Text text, const float x, const float y);
 
 		/**
 		*	Draws Text in a viewport area of the Graphics Window
 		*
 		*	@param text The text draw
 		*/
-		static void drawText(const media::Text text, const int x, const int y, const Viewport viewport);
+		static void drawText(const media::Text text, const float x, const float y, const Viewport viewport);
+
+		static void fillRect(const float x, const float y, const float width, const float height, const Color color);
+
+		static void fillRect(const float x, const float y, const float width, const float height, const Color color, const Viewport viewport);
+
+		static void beforeRender();
 
 		static void clear();
 
 		static void render();
 
-		static const Image* getImage(const std::string filename);
+		static Image* getImage(const std::string filename);
 
 		static void createNewViewport(const ViewportType vType, const int x, const int y, const int width, const int height);
 
 		static const Viewport getViewport(const ViewportType vType);
 
 		static const Viewport getViewportForCoordinate(int* x, int* y);
+
+		static void clearViewports();
 
 		static void free();
 

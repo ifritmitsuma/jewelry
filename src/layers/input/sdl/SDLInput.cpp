@@ -1,6 +1,6 @@
 #include "layers/input/sdl/SDLInput.h"
 #include "sdl/SDL.h"
-#include "GameManager.h"
+#include "game/GameManager.h"
 #include "layers/input/MouseInputType.h"
 
 using namespace layers;

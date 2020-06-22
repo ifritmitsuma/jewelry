@@ -4,13 +4,17 @@
 
 using namespace layers;
 
-int SCREEN_TICKS_PER_FRAME;
+Uint32 SCREEN_TICKS_PER_FRAME;
 Uint32 startTicks = SDL_GetTicks();
 Uint32 capTicks;
 int countedFrames = 0;
 
 std::list<std::string> fontNames = {
     "Blader"
+};
+
+std::list<int> fontSizes = {
+    22, 36, 48, 72
 };
 
 std::list<std::string> imageFilenames = {
@@ -36,6 +40,8 @@ void SDLGraphics::initialize() {
     /* We must call SDL_CreateRenderer in order for draw calls to affect this window. */
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
     //Update the surface
     SDL_UpdateWindowSurface(window);
 
@@ -44,7 +50,7 @@ void SDLGraphics::initialize() {
     }
 
     //Initialize SDL_ttf
-    if (TTF_Init() == -1)
+    if (TTF_Init() < 0)
     {
         printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
     }
@@ -59,7 +65,7 @@ void SDLGraphics::initialize() {
 
 }
 
-void SDLGraphics::clear() const {
+void SDLGraphics::beforeRender() const {
 
     capTicks = SDL_GetTicks();
 
@@ -68,7 +74,12 @@ void SDLGraphics::clear() const {
         avgFPS = 0;
     }
 
+}
+
+void SDLGraphics::clear() const {
+
     SDL_RenderClear(renderer);
+
 }
 
 void SDLGraphics::render() const {
@@ -97,24 +108,31 @@ void SDLGraphics::loadImage(const std::string filename) {
         int w, h;
         SDL_QueryTexture(loadedTexture, NULL, NULL, &w, &h);
 
-        image->setWidth(w);
-        image->setHeight(h);
+        image->setWidth((float) w);
+        image->setHeight((float) h);
 
-        images->insert(std::pair<Image*, SDL_Texture*>(image, loadedTexture));
+        images->insert(std::pair<Image, SDL_Texture*>(*image, loadedTexture));
         imageNames->insert(std::pair<std::string, Image*>(filename, image));
 
     }
 }
 
 void SDLGraphics::loadFont(const std::string font) {
-    TTF_Font* gFont = TTF_OpenFont(std::string("assets/font/").append(font + ".ttf").c_str(), 8);
-    if (gFont == NULL)
-    {
-        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-    else {
 
-        fonts->insert(std::pair<std::string, TTF_Font*>(font, gFont));
+    std::string fontFileName = std::string("assets/font/").append(font + ".ttf");
+
+    for (int size : fontSizes) {
+        
+        TTF_Font* gFont = TTF_OpenFont(fontFileName.c_str(), size);
+        if (gFont == NULL)
+        {
+            printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        }
+        else {
+
+            fonts->insert(std::pair<std::string, TTF_Font*>(font + std::to_string(size), gFont));
+
+        }
 
     }
 }
@@ -125,7 +143,7 @@ void SDLGraphics::drawImage(const std::string name, const float x, const float y
 
 }
 
-void SDLGraphics::drawImage(const Image* image, const float x, const float y) const {
+void SDLGraphics::drawImage(Image* image, const float x, const float y) const {
 
     SDL_FRect dest;
     dest.x = x;
@@ -134,7 +152,7 @@ void SDLGraphics::drawImage(const Image* image, const float x, const float y) co
     dest.h = image->getHeight();
 
     // copy the texture to the rendering context
-    SDL_RenderCopyF(renderer, images->at(image), NULL, &dest);
+    SDL_RenderCopyF(renderer, images->at(*image), NULL, &dest);
 
 }
 
@@ -144,7 +162,7 @@ void SDLGraphics::drawImage(const std::string name, const float x, const float y
 
 }
 
-void SDLGraphics::drawImage(const Image* image, const float x, const float y, const Viewport viewport) const {
+void SDLGraphics::drawImage(Image* image, const float x, const float y, const Viewport viewport) const {
 
     SDL_Rect rectViewport;
     rectViewport.x = viewport.x;
@@ -160,41 +178,30 @@ void SDLGraphics::drawImage(const Image* image, const float x, const float y, co
 
 }
 
-void SDLGraphics::drawText(const Text text, const int x, const int y) const {
+void SDLGraphics::drawText(const Text text, const float x, const float y) const {
 
-    SDL_Color color = { text.color.r, text.color.g, text.color.b, text.color.a };
+    SDL_Color color = { (Uint8) text.color.r, (Uint8) text.color.g, (Uint8) text.color.b, (Uint8) text.color.a };
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(fonts->at(text.font), text.text.c_str(), color);
-    if (textSurface == NULL)
-    {
-        printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-    else
-    {
-        //Create texture from surface pixels
-        SDL_Texture* mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-        if (mTexture == NULL)
-        {
-            printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
-        }
-        else
-        {
+    SDL_Surface* textureSurface = TTF_RenderText_Solid(fonts->at(text.font + std::to_string(text.size)), text.text.c_str(), color);
 
-            SDL_Rect rect;
-            
-            SDL_RenderGetViewport(renderer, &rect);
+    SDL_FRect dest;
+    dest.x = x;
+    dest.y = y;
+    dest.w = (float) textureSurface->w;
+    dest.h = (float) textureSurface->h;
 
-            //Render to screen
-            SDL_RenderCopyEx(renderer, mTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, textureSurface);
 
-        }
+    SDL_RenderCopyF(renderer, texture, NULL, &dest);
 
-        //Get rid of old surface
-        SDL_FreeSurface(textSurface);
-    }
+    SDL_DestroyTexture(texture);
+
+    SDL_FreeSurface(textureSurface);
+
+
 }
 
-void SDLGraphics::drawText(const Text text, const int x, const int y, const Viewport viewport) const {
+void SDLGraphics::drawText(const Text text, const float x, const float y, const Viewport viewport) const {
 
     SDL_Rect rectViewport;
     rectViewport.x = viewport.x;
@@ -210,7 +217,38 @@ void SDLGraphics::drawText(const Text text, const int x, const int y, const View
 
 }
 
-const Image* SDLGraphics::getImage(const std::string filename) {
+void SDLGraphics::fillRect(const float x, const float y, const float width, const float height, const Color color) const {
+
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+    SDL_FRect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = width;
+    rect.h = height;
+
+    SDL_RenderFillRectF(renderer, &rect);
+
+}
+
+void SDLGraphics::fillRect(const float x, const float y, const float width, const float height, const Color color, const Viewport viewport) const {
+
+
+    SDL_Rect rectViewport;
+    rectViewport.x = viewport.x;
+    rectViewport.y = viewport.y;
+    rectViewport.w = viewport.width;
+    rectViewport.h = viewport.height;
+
+    SDL_RenderSetViewport(renderer, &rectViewport);
+
+    fillRect(x, y, width, height, color);
+
+    SDL_RenderSetViewport(renderer, NULL);
+
+}
+
+Image* SDLGraphics::getImage(const std::string filename) {
 
     if (imageNames->find(filename) == imageNames->end()) {
         loadImage(filename);
@@ -230,10 +268,12 @@ void SDLGraphics::onClose() const {
     for (const auto& img : *images) {
         SDL_DestroyTexture(img.second);
     }
+    delete images;
 
     for (const auto& font : *fonts) {
         TTF_CloseFont(font.second);
     }
+    delete fonts;
 
     // Destroy renderer
     SDL_DestroyRenderer(renderer);

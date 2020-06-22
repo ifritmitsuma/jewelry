@@ -1,29 +1,18 @@
 #pragma once
 #include <string>
+#include "layers/graphics/Color.h"
 
 namespace media {
 
-	struct TextColor {
-
-		int r = 0;
-
-		int g = 0;
-
-		int b = 0;
-
-		int a = 1;
-
-	};
-
 	struct Text {
 	
-		const std::string text;
+		std::string text;
 
-		const std::string font;
+		std::string font;
 
-		const int size = 8;
+		int size = 12;
 
-		const TextColor color;
+		graphics::Color color = { 0, 0, 0, 255 };
 
 	};
 

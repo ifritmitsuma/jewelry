@@ -4,7 +4,7 @@ namespace graphics {
 
 	enum class ViewportType {
 
-		NONE, BOARD, MENU, SCORE
+		NONE, BOARD, MENU, SIDEBAR
 
 	};
 
